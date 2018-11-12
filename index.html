@@ -58,7 +58,7 @@
 					<script type="text/template">
 						从 *λ演算* 说起
 
-						> λ演算是图灵完备的，它是一种通用的计算模型，可用于模拟任何一台单带图灵机。
+						> λ演算是一套用于研究函数定义、函数应用和递归的形式系统，它是一种通用的计算模型，可用于模拟任何一台单带图灵机。
 
 						<!-- .element: class="fragment" -->
 
@@ -68,6 +68,11 @@
 						<!-- .element: class="fragment" -->
 					</script>
 				</section>
+<!-- 相对于计算机的历史而言，函数式编程其实是一个非常古老的概念。
+	函数式编程的基础模型来源于 λ演算，而 λ演算并非设计于在计算机上执行。
+	它是由 Alonzo Church和 Stephen Cole Kleene在 20世纪 30年代引入的一套
+	用于研究函数定义、函数应用和递归的形式系统。
+-->
 <!-- 图灵完备意味着你的语言可以做到能够用图灵机能做到的所有事情，可以解决所有的可计算问题。 -->
 <!-- λ演算是一个极其简单但又十分强大的概念。它的核心主要有两个概念 -->
 				<section data-markdown>
@@ -108,17 +113,19 @@
 <!-- 函数式编程语言中函数是一等公民与此也是一致的。 -->
 				<section data-markdown>
 					<script type="text/template">
-						定义 Bool 值
+						定义 *Bool* 值
 
 						```
 						T = λ x y. x
 						F = λ x y. y
 						```
+						<!-- .element: class="fragment" -->
 
 						```
 						T a b = (λ x. (λ y. x)) a b = (λ y. a) b = a
 						F a b = (λ x. (λ y. y)) a b = (λ y. y) b = b
 						```
+						<!-- .element: class="fragment" -->
 
 						<!-- 从这里我们也可以看到， λ 演算的根本原则认为，
 						函数是第一类对象，对于Bool量，我们确实用某种函数的方式定义了它们。
@@ -130,7 +137,7 @@
 				</section>
 				<section data-markdown>
 					<script type="text/template">
-						构造 Bool 运算
+						构造 *Bool* 运算
 
 						```
 						And = λ x y. ?
@@ -161,7 +168,8 @@
 						```
 						<!-- .element: class="fragment" -->
 
-						通过最基本的函数抽象和函数应用法则，能够构造出任意复杂的可计算函数
+						λ演算通过最基本的函数抽象和函数应用法则，能够构造出任意复杂的*可计算函数*
+
 						<!-- .element: class="fragment" -->
 
 						<!-- λ 演算神奇之处在于，通过最基本的函数抽象和函数应用法则，
@@ -231,10 +239,18 @@
 <!-- 命令式（imperative）语言是指一步步导向目标的一个过程。程序的执行往往限制在某些状态上。
 	状态有global/local variable，它们是可以变化的。还有if else等control flow的结构。
 	命令式语言常见的有C， C++，Java等等。 -->
+<!-- 文学编程（literate programming） -->
+<!-- 过程式编程 -->
+
 <!-- 声明式（declarative）语言描述目标，具体的执行由引擎，系统等等决定。
 	function calls, high order functions, recursion等都是它的特点。
 	比较常见的语言包括：Scala，Haskell，Lisp，Scheme等。 -->
+<!-- 函数式编程 -->
+<!-- 逻辑编程 -->
+
 <!-- 结构化编程 -->
+<!-- 面向对象编程 -->
+<!-- 递归编程 -->
 				<section data-markdown>
 					<script type="text/template">
 						语言中的范式
@@ -657,12 +673,79 @@
 
 				<section data-markdown>
 					<script type="text/template">
+						A Simple Example
+
+						```javascript
+						var data = {
+							result: "SUCCESS",
+							tasks: [
+								{
+									id: 104, complete: false, priority: "high",
+									dueDate: "2018-11-29", username: "Scott",
+									title: "Do something", created: "9/22/2018"
+								},
+								{
+									id: 105, complete: false, priority: "medium",
+									dueDate: "2018-11-22", username: "Lena",
+									title: "Do something else", created: "9/22/2018"
+								},
+								{
+									id: 107, complete: true, priority: "high",
+									dueDate: "2018-11-22", username: "Mike",
+									title: "Fix the foo", created: "9/22/2018"
+								},
+								{
+									id: 108, complete: false, priority: "low",
+									dueDate: "2018-11-15", username: "Punam",
+									title: "Adjust the bar", created: "9/25/2018"
+								},
+								{
+									id: 110, complete: false, priority: "medium",
+									dueDate: "2018-11-15", username: "Scott",
+									title: "Rename everything", created: "10/2/2018"
+								},
+								{
+									id: 112, complete: true, priority: "high",
+									dueDate: "2018-11-27", username: "Lena",
+									title: "Alter all quuxes", created: "10/5/2018"
+								}
+								// , ...
+							]
+						};
+						```
+
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
+						A Simple Example
+
+						```javascript
+						var getIncompleteTaskSummaries = function(membername) {
+							return fetchData()
+									.then(R.get('tasks'))
+									.then(R.filter(R.propEq('username', membername)))
+									.then(R.reject(R.propEq('complete', true)))
+									.then(R.map(R.pick(['id', 'dueDate', 'title', 'priority'])))
+									.then(R.sortBy(R.get('dueDate')));
+						};
+						```
+
+					</script>
+				</section>
+
+				<section data-markdown>
+					<script type="text/template">
 						### *Ramda* 特点
 
-						- function first，data last
+						- Function first,  data last
 						<!-- .element: class="fragment" -->
 
-						- 所有方法都支持柯里化
+						- Currying
+						<!-- .element: class="fragment" -->
+
+						- Pointfree
 						<!-- .element: class="fragment" -->
 					</script>
 				</section>
