@@ -41,9 +41,9 @@
 				<section style="margin-top:3%" data-markdown>
 					<script type="text/template">
 						# *Functional Programming in JavaScript*
-						
+
 						## JavaScript 函数式编程
-						
+
 					</script>
 				</section>
 
@@ -57,14 +57,14 @@
 				<section data-markdown>
 					<script type="text/template">
 						从 *λ演算* 说起
-						
+
 						> λ演算是图灵完备的，它是一种通用的计算模型，可用于模拟任何一台单带图灵机。
-						
+
 						<!-- .element: class="fragment" -->
-		
+
 						- 函数的抽象，通过引入变量来归纳得出表达式
 						- 函数的应用，通过给变量赋值来对已得出的表达式进行计算
-						
+
 						<!-- .element: class="fragment" -->
 					</script>
 				</section>
@@ -93,19 +93,82 @@
 						<!-- .element: class="fragment" -->
 
 						```
-						// x=1 y=2				
+						// x=1 y=2
 						( (λx.λy.2*x+y) 1) 2 = ( λy.2+y) 2 = 4
 						```
 						<!-- .element: class="fragment" -->
 						- 计算顺序是固定的
 						<!-- .element: class="fragment" -->
-						
+
 						- 函数的返回值也可以是一个*函数*
 						<!-- .element: class="fragment" -->
 					</script>
 				</section>
 <!-- 计算顺序是固定的，从里层到外层一层层归约，如果改变变量的次序也会影响函数应用中的返回值 -->
 <!-- 函数式编程语言中函数是一等公民与此也是一致的。 -->
+				<section data-markdown>
+					<script type="text/template">
+						定义 Bool 值
+
+						```
+						T = λ x y. x
+						F = λ x y. y
+						```
+
+						```
+						T a b = (λ x. (λ y. x)) a b = (λ y. a) b = a
+						F a b = (λ x. (λ y. y)) a b = (λ y. y) b = b
+						```
+
+						<!-- 从这里我们也可以看到， λ 演算的根本原则认为，
+						函数是第一类对象，对于Bool量，我们确实用某种函数的方式定义了它们。
+						但是，脱离于具体运算性质的Bool量并不能称之为真正的Bool量。
+						所以我们还需要用λ表达式定义Bool运算，
+						并且所定义的这些运算算子能够如同Bool代数中所设定的Bool运算算子的那些性质。 -->
+
+					</script>
+				</section>
+				<section data-markdown>
+					<script type="text/template">
+						构造 Bool 运算
+
+						```
+						And = λ x y. ?
+						```
+						<!-- .element: class="fragment" -->
+
+						```Javascript
+						if (res != null && res.success) {
+							// TODO: ...
+						}
+						```
+						<!-- .element: class="fragment" -->
+
+						```
+						? = x y F
+						```
+						<!-- .element: class="fragment" -->
+
+						```
+						And = λ x y. x y F
+
+						```
+						<!-- .element: class="fragment" -->
+
+						```
+						Or = λ x y. x T y
+						Not = λ x. x F T
+						```
+						<!-- .element: class="fragment" -->
+
+						通过最基本的函数抽象和函数应用法则，能够构造出任意复杂的可计算函数
+						<!-- .element: class="fragment" -->
+
+						<!-- λ 演算神奇之处在于，通过最基本的函数抽象和函数应用法则，
+						配套以适当的技巧，便能够构造出任意复杂的可计算函数。 -->
+
+					</script>
+				</section>
 				<section data-markdown>
 					<script type="text/template">
 						### *Definition*
@@ -119,14 +182,6 @@
 						一个简单的例子：函数式编程实现*if else*
 
 						```javascript
-						// IF(cond)(thn)(els)
-						IF = function(cond) {
-							return function(thn) {
-								return function(els) {
-									return cond(thn)(els)
-								}
-							}
-						}
 						// TRUE
 						tru = function(thn) {
 							return function(els) {
@@ -139,6 +194,14 @@
 								return els
 							}
 						}
+						// IF(cond)(thn)(els)
+						IF = function(cond) {
+							return function(thn) {
+								return function(els) {
+									return cond(thn)(els)
+								}
+							}
+						}
 						IF(tru)(1)(2) //=> 1
 						IF(fls)(1)(2) //=> 2
 						```
@@ -148,7 +211,7 @@
 				<section data-markdown>
 					<script type="text/template">
 						### *programming?* 编程范式
-					
+
 						- Object-oriented (OOP) 面向对象
 						- Procedural 						面向过程
 						- Functional   					函数式
@@ -192,7 +255,7 @@
 				<section data-markdown>
 					<script type="text/template">
 						### 数据和行为的关系
-						
+
 						面向对象式
 						```php
 						// man.php
@@ -278,13 +341,13 @@
 						var xs = [1,2,3,4,5];
 
 						// 纯的
-						xs.slice(0,3); //=> [1,2,3]		
-						xs.slice(0,3); //=> [1,2,3]			
 						xs.slice(0,3); //=> [1,2,3]
-					
+						xs.slice(0,3); //=> [1,2,3]
+						xs.slice(0,3); //=> [1,2,3]
+
 						// 不纯的
-						xs.splice(0,3); //=> [1,2,3]		
-						xs.splice(0,3); //=> [4,5]	
+						xs.splice(0,3); //=> [1,2,3]
+						xs.splice(0,3); //=> [4,5]
 						xs.splice(0,3); //=> []
 						```
 
@@ -293,7 +356,7 @@
 					</script>
 				</section>
 <!-- 绝大部分纯函数应该拥有一或多个参数值。
-	纯函数必须要有返回值。	
+	纯函数必须要有返回值。
 	相同输入的纯函数的返回值必须一致。
 	纯函数不能够产生任何的副作用。 -->
 
@@ -312,7 +375,7 @@
 							// ...
 							const last = funcs[funcs.length - 1]
 							const rest = funcs.slice(0, -1)
-							return (...args) => rest.reduceRight((composed, f) 
+							return (...args) => rest.reduceRight((composed, f)
 								=> f(composed), last(...args))
 						}
 						```
@@ -424,7 +487,7 @@
 						var sum = function (a, b, c) {
 							return a + b + c;
 						};
-						console.log(sum(1, 2, 3)); //=> 6 
+						console.log(sum(1, 2, 3)); //=> 6
 						```
 
 						```js
@@ -555,7 +618,7 @@
 				<section data-markdown>
 					<script type="text/template">
 						### *Ramda*
-						
+
 						<img src="attach/ramda.png" class="logo" style="width:200px" />
 
 						> *A practical functional library for JavaScript programmers.*
@@ -565,7 +628,7 @@
 				<section data-markdown>
 					<script type="text/template">
 						### *Quick Overview*
-						
+
 						```js
 						// 判断第一个参数是否大于第二个参数
 						R.gt(2)(1) //=> true
@@ -588,14 +651,14 @@
 
 						// ...
 						```
-						
+
 					</script>
 				</section>
 
 				<section data-markdown>
 					<script type="text/template">
 						### *Ramda* 特点
-						
+
 						- function first，data last
 						<!-- .element: class="fragment" -->
 
