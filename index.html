@@ -127,55 +127,128 @@
 						```
 						<!-- .element: class="fragment" -->
 
-						<!-- 从这里我们也可以看到， λ 演算的根本原则认为，
-						函数是第一类对象，对于Bool量，我们确实用某种函数的方式定义了它们。
-						但是，脱离于具体运算性质的Bool量并不能称之为真正的Bool量。
-						所以我们还需要用λ表达式定义Bool运算，
-						并且所定义的这些运算算子能够如同Bool代数中所设定的Bool运算算子的那些性质。 -->
+<!-- 从这里我们也可以看到， λ 演算的根本原则认为，
+函数是第一类对象，对于Bool量，我们确实用某种函数的方式定义了它们。
+但是，脱离于具体运算性质的Bool量并不能称之为真正的Bool量。
+所以我们还需要用λ表达式定义Bool运算，
+并且所定义的这些运算算子能够如同Bool代数中所设定的Bool运算算子的那些性质。 -->
 
 					</script>
 				</section>
-				<section data-markdown>
-					<script type="text/template">
-						构造 *Bool* 运算
+<!-- Alonzo Church -->
+				<section>
+					<section data-markdown>
+						<script type="text/template">
+							构造 *Bool* 运算
 
-						```
-						And = λ x y. ?
-						```
-						<!-- .element: class="fragment" -->
+							```
+							And = λ x y. ?
+							```
+							<!-- .element: class="fragment" -->
 
-						```Javascript
-						if (res != null && res.success) {
-							// TODO: ...
-						}
-						```
-						<!-- .element: class="fragment" -->
+							```Javascript
+							if (res != null && res.success) {
+								// TODO: ...
+							}
+							```
+							<!-- .element: class="fragment" -->
 
-						```
-						? = x y F
-						```
-						<!-- .element: class="fragment" -->
+							```
+							? = x y F
+							```
+							<!-- .element: class="fragment" -->
 
-						```
-						And = λ x y. x y F
+							```
+							And = λ x y. x y F
 
-						```
-						<!-- .element: class="fragment" -->
+							```
+							<!-- .element: class="fragment" -->
 
-						```
-						Or = λ x y. x T y
-						Not = λ x. x F T
-						```
-						<!-- .element: class="fragment" -->
+							```
+							Or = λ x y. x T y
+							Not = λ x. x F T
+							```
+							<!-- .element: class="fragment" -->
 
-						λ演算通过最基本的函数抽象和函数应用法则，能够构造出任意复杂的*可计算函数*
+							λ演算通过最基本的函数抽象和函数应用法则，能够构造出任意复杂的*可计算函数*
 
-						<!-- .element: class="fragment" -->
+							<!-- .element: class="fragment" -->
 
-						<!-- λ 演算神奇之处在于，通过最基本的函数抽象和函数应用法则，
-						配套以适当的技巧，便能够构造出任意复杂的可计算函数。 -->
+						</script>
+					</section>
+<!-- λ 演算神奇之处在于，通过最基本的函数抽象和函数应用法则，
+配套以适当的技巧，便能够构造出任意复杂的可计算函数。 -->
 
-					</script>
+<!-- 直观地说，如果存在一段程序来计算一个函数，那么这个函数就是可计算的。
+更明确地说，如果对于函数f: A -> B存在一个算法，以任意x∈A作为输入，
+都可以得到y = f(x)作为输出，则这个函数是可计算的。 -->
+					<section data-markdown>
+						<script type="text/template">
+							#### *The Halting Problem* 停机问题
+
+							是否存在一个程序P，对于任意输入的程序w，能够判断w会在有限时间内结束或者死循环
+
+							```
+							// 返回 true  如果 program(input) 会返回
+							// 返回 false 如果 program(input) 不返回
+							function isHalt(program, input) -> bool
+							```
+							<!-- .element: class="fragment" -->
+
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							#### *The Halting Problem* 停机问题
+
+							```javascript
+							function loop() {
+								while(true) {}
+							}
+							// 如果输入是 0，返回，否则无限循环
+							function foo(input) {
+								if (input == 0) {
+									return
+								}
+								else {
+									loop()
+								}
+							}
+							```
+
+							```
+							isHalt(foo, 0)  // 返回 true
+							isHalt(foo, 1)  // 返回 false
+							```
+							<!-- .element: class="fragment" -->
+
+						</script>
+					</section>
+					<section data-markdown>
+						<script type="text/template">
+							#### *The Halting Problem* 停机问题
+
+							```javascript
+							function loop() {
+								while(true) {}
+							}
+							function hack(program) {
+								if (isHalt(program, program)) {
+									loop()
+								}
+								else {
+									return
+								}
+							}
+							```
+
+							```
+							isHalt(hack, hack)	// => ?
+							```
+							<!-- .element: class="fragment" -->
+
+						</script>
+					</section>
 				</section>
 				<section data-markdown>
 					<script type="text/template">
@@ -630,11 +703,48 @@
 							```
 						</script>
 					</section>
+					<section data-markdown>
+						<script type="text/template">
+							#### *When HOC？*
+
+							```
+							// 桌子
+							<Table />
+							```
+							<!-- .element: class="fragment" -->
+
+							```
+							// 红色的桌子 => 属性
+							<Table color="red" />
+							```
+							<!-- .element: class="fragment" -->
+
+							```
+							// 上面有茶壶的桌子 => 嵌套
+							<Table>
+								<Teapot />
+							</Table>
+							```
+							<!-- .element: class="fragment" -->
+
+							```
+							// 能滚动的桌子 => HOC
+							ScrollableTable = makeScrolling(Table)
+							<ScrollableTable />
+							```
+							<!-- .element: class="fragment" -->
+
+
+							```
+							// 能滚动的椅子 => HOC
+							ScrollableChair = makeScrolling(Chair)
+							<ScrollableChair />
+							```
+							<!-- .element: class="fragment" -->
+
+						</script>
+					</section>
 				</section>
-				<!-- 桌子->红色的桌子->白色的桌子
-						->带有茶杯的桌子
-						->能带有轮子的桌子 -->
-				<!-- 椅子->带有轮子的椅子 -->
 				<section data-markdown>
 					<script type="text/template">
 						### *Ramda*
